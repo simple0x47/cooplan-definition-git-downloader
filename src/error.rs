@@ -11,6 +11,7 @@ pub enum ErrorKind {
     SerializationFailure,
     ConnectionFailure,
     ChannelNotAvailable,
+    VersionSetFailure,
     DataWritingFailure,
     VersionReadFailure,
 }

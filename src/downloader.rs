@@ -1,4 +1,4 @@
-use git2::Repository;
+use git2::{Oid, Repository};
 
 use crate::{
     clone::git_clone,
@@ -64,6 +64,31 @@ impl Downloader {
                     )),
                 }
             }
+            Err(error) => Err(error),
+        }
+    }
+
+    pub fn set_version(&self, hash: String) -> Result<(), Error> {
+        match self.get_repository() {
+            Ok(repository) => match Oid::from_str(hash.as_str()) {
+                Ok(version) => match repository.set_head_detached(version) {
+                    Ok(_) => match repository.checkout_head(None) {
+                        Ok(_) => Ok(()),
+                        Err(error) => Err(Error::new(
+                            ErrorKind::VersionSetFailure,
+                            format!("failed to set version: {}", error).as_str(),
+                        )),
+                    },
+                    Err(error) => Err(Error::new(
+                        ErrorKind::VersionSetFailure,
+                        format!("failed to set version: {}", error).as_str(),
+                    )),
+                },
+                Err(error) => Err(Error::new(
+                    ErrorKind::VersionSetFailure,
+                    format!("failed to set version: {}", error).as_str(),
+                )),
+            },
             Err(error) => Err(error),
         }
     }
