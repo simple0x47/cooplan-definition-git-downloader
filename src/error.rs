@@ -23,10 +23,10 @@ pub struct Error {
 }
 
 impl Error {
-    pub fn new(kind: ErrorKind, message: &str) -> Error {
+    pub fn new(kind: ErrorKind, message: impl Into<String>) -> Error {
         Error {
             kind,
-            message: message.to_string(),
+            message: message.into(),
         }
     }
 
